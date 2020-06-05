@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Constants from "expo-constants";
 import { Feather as Icon } from "@expo/vector-icons/";
 import {
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Text,
   ScrollView,
-  Image
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MapView, { Marker } from "react-native-maps";
@@ -22,7 +22,22 @@ interface Item {
 
 const Points = () => {
   const navigation = useNavigation();
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [items, setItems] = useState<Item[]>([]);
+
+  const handleSelectItem = useCallback(
+    (id: number) => {
+      const alreadySelected = selectedItems.findIndex((item) => item === id);
+
+      if (alreadySelected >= 0) {
+        const filteredItems = selectedItems.filter((item) => item !== id);
+        setSelectedItems(filteredItems);
+      } else {
+        setSelectedItems([...selectedItems, id]);
+      }
+    },
+    [selectedItems]
+  );
 
   useEffect(() => {
     api.get<Item[]>("/items").then((response) => {
@@ -65,7 +80,7 @@ const Points = () => {
                     uri:
                       "https://avatars0.githubusercontent.com/u/12158839?s=400&u=3db81e23d906bba325f71f2c791393180202c022&v=4",
                   }}
-                ></Image>
+                />
                 <Text style={styles.mapMarkerTitle}>Mercadim</Text>
               </View>
             </Marker>
@@ -80,7 +95,15 @@ const Points = () => {
         >
           {items.map((item) => {
             return (
-              <TouchableOpacity key={item.id} style={styles.item}>
+              <TouchableOpacity
+                onPress={() => handleSelectItem(item.id)}
+                activeOpacity={0.6}
+                key={item.id}
+                style={[
+                  styles.item,
+                  selectedItems.includes(item.id) ? styles.selectedItem : {},
+                ]}
+              >
                 <SvgUri width={42} height={42} uri={item.image_url_mobile} />
                 <Text style={styles.itemTitle}>{item.title}</Text>
               </TouchableOpacity>
