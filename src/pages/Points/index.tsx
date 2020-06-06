@@ -1,5 +1,5 @@
 import { Feather as Icon } from "@expo/vector-icons/";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 import * as Permission from "expo-permissions";
@@ -31,8 +31,14 @@ interface Point {
   longitude: number;
 }
 
+interface Params {
+  uf: string;
+  city: string;
+}
+
 const Points = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [points, setPoints] = useState<Point[]>([]);
@@ -40,6 +46,8 @@ const Points = () => {
     0,
     0,
   ]);
+
+  const routeParams = route.params as Params;
 
   const handleSelectItem = useCallback(
     (id: number) => {
@@ -65,15 +73,15 @@ const Points = () => {
     api
       .get<Point[]>("/points", {
         params: {
-          city: "São Paulo",
-          uf: "SP",
-          items: [1, 2],
+          city: routeParams.city,
+          uf: routeParams.uf,
+          items: selectedItems,
         },
       })
       .then((response) => {
         setPoints(response.data);
       });
-  }, []);
+  }, [selectedItems]);
 
   useEffect(() => {
     async function loadPosition() {

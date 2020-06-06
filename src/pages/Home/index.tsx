@@ -100,7 +100,7 @@ const Home = () => {
         />
         <RectButton
           style={styles.button}
-          onPress={() => navigation.navigate("Points")}
+          onPress={() => navigation.navigate("Points", { uf: selectedUf, city: selectedCity})}
         >
           <View style={styles.buttonIcon}>
             <Icon name="arrow-right" color="#fff" size={24} />
