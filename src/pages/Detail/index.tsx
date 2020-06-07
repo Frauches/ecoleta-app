@@ -22,6 +22,7 @@ interface Params {
 interface Data {
   point: {
     image: string;
+    image_url_mobile: string;
     name: string;
     email: string;
     whatsapp: string;
@@ -42,6 +43,7 @@ const Detail = () => {
     const { point_id } = route.params as Params;
 
     api.get<Data>(`/points/${point_id}`).then((response) => {
+      console.log(response.data);
       setData(response.data);
     });
   }, []);
@@ -72,7 +74,7 @@ const Detail = () => {
         <Image
           style={styles.pointImage}
           source={{
-            uri: data.point.image,
+            uri: data.point.image_url_mobile,
           }}
         />
 

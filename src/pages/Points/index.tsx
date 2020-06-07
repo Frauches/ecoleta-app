@@ -27,6 +27,7 @@ interface Point {
   id: number;
   name: string;
   image: string;
+  image_url_mobile: string;
   latitude: number;
   longitude: number;
 }
@@ -144,7 +145,7 @@ const Points = () => {
                         style={styles.mapMarkerImage}
                         resizeMode="cover"
                         source={{
-                          uri: point.image,
+                          uri: point.image_url_mobile,
                         }}
                       />
                       <Text style={styles.mapMarkerTitle}>{point.name}</Text>
